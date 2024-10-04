@@ -39,7 +39,7 @@ int main() {
             dice[6] = tmp[5];
 
             if (board[x+dx[0]][y+dy[0]] == 0 ){
-                board[x+dx[0]][y+dy[0]] == dice[1];
+                board[x+dx[0]][y+dy[0]] = dice[1];
             }
             else {
                 dice[1] = board[x+dx[0]][y+dy[0]];
@@ -55,7 +55,7 @@ int main() {
             dice[5] = tmp[6];
             dice[6] = tmp[3];
             if (board[x+dx[1]][y+dy[1]] == 0 ){
-                board[x+dx[1]][y+dy[1]] == dice[1];
+                board[x+dx[1]][y+dy[1]] = dice[1];
             }
             else {
                 dice[1] = board[x+dx[1]][y+dy[1]];
@@ -71,7 +71,7 @@ int main() {
             dice[4] = tmp[6];
             dice[6] = tmp[2];
             if (board[x+dx[2]][y+dy[2]] == 0 ){
-                board[x+dx[2]][y+dy[2]] == dice[1];
+                board[x+dx[2]][y+dy[2]] = dice[1];
             }
             else {
                 dice[1] = board[x+dx[2]][y+dy[2]];
@@ -87,7 +87,7 @@ int main() {
             dice[4] = tmp[1];
             dice[6] = tmp[4];
             if (board[x+dx[3]][y+dy[3]] == 0 ){
-                board[x+dx[3]][y+dy[3]] == dice[1];
+                board[x+dx[3]][y+dy[3]] = dice[1];
             }
             else {
                 dice[1] = board[x+dx[3]][y+dy[3]];
