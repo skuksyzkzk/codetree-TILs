@@ -66,7 +66,7 @@ void spread() {
 			int nx = x + grow_dx[dir];
 			int ny = y + grow_dy[dir];
 			if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
-			// 제초 or 벽 있을시 안됨 
+			// 제초(-2) or 벽 있을시 안됨 or 나무있어도 
 			if (tree[nx][ny] < 0 || tree[nx][ny] > 0) continue;
 			if (tree[nx][ny] == 0) dirv[i].push_back(dir);
 
@@ -102,7 +102,7 @@ void kill() {
 				tmpx = nx;
 				tmpy = ny;
 				if (nx < 0 || ny < 0 || nx >= n || ny >= n) break;
-				// 제초 or 벽 있을시 안됨 
+				// 벽 빈자리 일 경우 컷 
 				if (tree[nx][ny] <= 0) break;
 				killcnt += tree[nx][ny];
 			}
@@ -166,7 +166,6 @@ int main() {
 	while (m--) {
 		grow();
 		spread();
-		expire--; 
 		if (expire == 0) {
 			expire = c;
 			killflag = 0;
@@ -174,7 +173,7 @@ int main() {
 			killinit();
 		}
 		if (!killflag) kill();
-		
+		expire--; 
 	}
 	cout << total_kill_cnt;
 	return 0;
