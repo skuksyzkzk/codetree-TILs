@@ -182,6 +182,7 @@ int main() {
 	while (m--) {
 		grow();
 		spread();
+		expire--;
 		if (expire == 0) {
 			expire = c;
 			killflag = 0;
@@ -192,7 +193,7 @@ int main() {
 			killarr.clear();
 		}
 		if (!killflag) kill();
-		expire--;
+		
 	}
 	cout << total_kill_cnt;
 	return 0;
