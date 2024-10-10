@@ -35,24 +35,9 @@ vector<pair<int,int>> killarr; // 죽인 칸 정보
 
 bool killflag;
 int total_kill_cnt = 0;
-void printtree() {
-	cout << "\n";
-	for (auto nxt : trees) {
-		cout << nxt.first << " ," << nxt.second << "\n";
-	}
-	cout << "\n";
 
-}
-void print() {
-	cout << "\n";
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cout << tree[i][j] << " ";
-		}
-		cout << "\n";
-	}
-	cout << '\n';
-}
+
+
 void grow() {
 	for (int i = 0; i < trees.size(); i++) {
 		int x = trees[i].first; int y = trees[i].second;
@@ -76,7 +61,6 @@ void grow() {
 		// MAX 그루수가 100이니까 
 		//if (tree[x][y] > MAX) tree[x][y] = MAX;
 	}
-	print();
 }
 void spread() {
 	for (int i = 0; i < trees.size(); i++) {
@@ -111,7 +95,6 @@ void spread() {
 
 
 	}
-	print();
 }
 void kill() {
 	// 안죽였을때 or 새롭게 제초 뿌려야될때
@@ -166,26 +149,19 @@ void kill() {
 			tree[nx][ny] = -2; // 제초 뿌림
 			killflag = 1;
 			// 죽인 나무는 나무벡터에서 삭제
-			cout << "Print trees" << "\n";
-			printtree();
-			
-			
 
 			//제초 자리 기억 - 기간이 끝나면 바로 그 자리 0으로
 			killarr.push_back({ nx,ny });
 		}
 	}
-	for (auto nxt : killarr) {
-		cout << nxt.first << "," << nxt.second << '\n';
-	}
+	
 	for (auto nxt : killarr) {
 		trees.erase(
 			remove(trees.begin(), trees.end(), make_pair(nxt.first, nxt.second)),
 			trees.end()
 		);
-	}cout << "Print trees After delete" << "\n";
-	printtree();
-	print();
+	}
+
 
 }
 
