@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
-
+const int MAX = 100;
 int n, m, k, c;
 int tree[21][21];
 
@@ -55,6 +55,8 @@ void grow() {
 		}
 		// 성장
 		tree[x][y] += arround;
+        // MAX 그루수가 100이니까 
+        if (tree[x][y] > MAX) tree[x][y] = MAX;
 	}
 
 }
@@ -80,6 +82,8 @@ void spread() {
 			int ny = y + grow_dy[dirv[i][dir]];
 			trees.push_back({ nx,ny });
 			tree[nx][ny] += (tree[x][y] / dirv[i].size());
+            // MAX 그루수가 100이니까 
+            if (tree[nx][ny] > MAX) tree[nx][ny] = MAX;
 		}
 		// 번식후 다시 번식 배열초기화
 		dirv[i].erase(dirv[i].begin(), dirv[i].end());
@@ -157,7 +161,7 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			cin >> tree[i][j];
-			if (tree[i][j] != 0 && tree[i][j] != -1) {
+			if (tree[i][j] >0) {
 				trees.push_back({ i,j });
 			}
 		}
