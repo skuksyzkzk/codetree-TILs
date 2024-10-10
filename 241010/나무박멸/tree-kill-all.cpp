@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
-const int MAX = 100;
+const int MAX = 100; // MAX 나무 그루수 
 int n, m, k, c;
 int tree[21][21];
 
@@ -112,6 +112,7 @@ void kill() {
 			}
 		}
 		killsave.push_back({ killcnt,x,y });
+		killcnt=0;
 	}
 	// 여기서 내림차순으로 정렬
 	sort(killsave.begin(), killsave.end(), cmp);
