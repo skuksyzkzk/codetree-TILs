@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
-
+const int MAX = 100; // MAX 나무 그루수 
 int n, m, k, c;
 int tree[21][21];
 
@@ -18,40 +18,65 @@ struct Info {
 	int x;
 	int y;
 };
-bool cmp(Info a, Info b) {
+
+
+bool cmp(Info& a, Info& b) {
 	if (a.count != b.count) {
 		return a.count > b.count;
 	}
 	else {
 		if (a.x != b.x) return a.x < b.x;
-		return a.y < b.y;
+		else return a.y < b.y;
 	}
 }
 vector<pair<int, int>> trees; // 현재 나무 위치
 vector<int> dirv[500]; // 번식 가능한 칸 
-vector<Info> killarr; // 죽인 칸 정보 
+vector<pair<int,int>> killarr; // 죽인 칸 정보 
 
 bool killflag;
 int total_kill_cnt = 0;
+void printtree() {
+	cout << "\n";
+	for (auto nxt : trees) {
+		cout << nxt.first << " ," << nxt.second << "\n";
+	}
+	cout << "\n";
 
+}
+void print() {
+	cout << "\n";
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << tree[i][j] << " ";
+		}
+		cout << "\n";
+	}
+	cout << '\n';
+}
 void grow() {
 	for (int i = 0; i < trees.size(); i++) {
 		int x = trees[i].first; int y = trees[i].second;
-		int num = tree[x][y];//그루수
-		int arround = 0;// 성장치 
+		int arround = 4;// 성장치 
 		// 성장시 4방향 확인 
 		for (int dir = 0; dir < 4; dir++) {
 			int nx = x + grow_dx[dir];
 			int ny = y + grow_dy[dir];
-			if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
-			if (tree[nx][ny] >0) arround++;
+			if (nx < 0 || ny < 0 || nx >= n || ny >= n) {
+				arround--;
+				continue;
+			}
+			// 제초 or 벽 있을시 안됨 
+			if (tree[nx][ny] <= 0) {
+				arround--;
+				continue;
+			}
 		}
 		// 성장
 		tree[x][y] += arround;
 		// MAX 그루수가 100이니까 
 		//if (tree[x][y] > MAX) tree[x][y] = MAX;
 	}
-
+	print();
 }
 void spread() {
 	for (int i = 0; i < trees.size(); i++) {
@@ -62,7 +87,7 @@ void spread() {
 			int ny = y + grow_dy[dir];
 			if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
 			// 제초(-2) or 벽 있을시 안됨 or 나무있어도 
-			if (tree[nx][ny] < 0 ) continue;
+			if (tree[nx][ny] < 0 || tree[nx][ny] > 0) continue;
 			if (tree[nx][ny] == 0) dirv[i].push_back(dir);
 
 		}
@@ -73,7 +98,10 @@ void spread() {
 		for (int dir = 0; dir < dirv[i].size(); dir++) {
 			int nx = x + grow_dx[dirv[i][dir]];
 			int ny = y + grow_dy[dirv[i][dir]];
-			trees.push_back({ nx,ny });
+			if (find(trees.begin(), trees.end(), make_pair(nx, ny)) == trees.end()) {
+				trees.push_back({ nx, ny });
+			}
+			
 			tree[nx][ny] += (tree[x][y] / dirv[i].size());
 			// MAX 그루수가 100이니까 
 			//if (tree[nx][ny] > MAX) tree[nx][ny] = MAX;
@@ -83,10 +111,12 @@ void spread() {
 
 
 	}
+	print();
 }
 void kill() {
 	// 안죽였을때 or 새롭게 제초 뿌려야될때
 	vector<Info> killsave; // 제초할 칸 탐색 저장용
+	
 	for (int i = 0; i < trees.size(); i++) {
 		int x = trees[i].first; int y = trees[i].second;
 		// 제초 
@@ -109,10 +139,11 @@ void kill() {
 	}
 	// 여기서 내림차순으로 정렬
 	sort(killsave.begin(), killsave.end(), cmp);
-
+	
 	int delete_x = killsave.front().x;
 	int delete_y = killsave.front().y;
 	total_kill_cnt += killsave.front().count;
+	tree[delete_x][delete_y] = -2;
 	killarr.push_back({ delete_x, delete_y });
 	for (int dir = 0; dir < 4; dir++) {
 		int tmpx = killsave.front().x; int tmpy = killsave.front().y;
@@ -126,32 +157,38 @@ void kill() {
 			if (nx < 0 || ny < 0 || nx >= n || ny >= n) break;
 			// 제초 or 벽 있을시 안됨 
 			if (tree[nx][ny] < 0) break;
-            if (tree[nx][ny] == 0){
-                tree[nx][ny] = -2;
-                killarr.push_back({nx,ny});
-                break;
-            }
+			if (tree[nx][ny] == 0) {
+				tree[nx][ny] = -2;
+				killarr.push_back({ nx,ny });
+				break;
+			}
 			// 나무가 있다는 것 
 			tree[nx][ny] = -2; // 제초 뿌림
 			killflag = 1;
 			// 죽인 나무는 나무벡터에서 삭제
-			trees.erase(
-				remove(trees.begin(), trees.end(), make_pair(nx, ny))
-				, trees.end()
-			);
+			cout << "Print trees" << "\n";
+			printtree();
+			
+			
+
 			//제초 자리 기억 - 기간이 끝나면 바로 그 자리 0으로
 			killarr.push_back({ nx,ny });
 		}
 	}
-
-
-}
-// 제초자리 다시 0으로 초기화
-void killinit() {
 	for (auto nxt : killarr) {
-		tree[nxt.x][nxt.y] = 0;
+		cout << nxt.first << "," << nxt.second << '\n';
 	}
+	for (auto nxt : killarr) {
+		trees.erase(
+			remove(trees.begin(), trees.end(), make_pair(nxt.first, nxt.second)),
+			trees.end()
+		);
+	}cout << "Print trees After delete" << "\n";
+	printtree();
+	print();
+
 }
+
 int main() {
 	// 여기에 코드를 작성해주세요.
 	ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
@@ -169,15 +206,17 @@ int main() {
 	while (m--) {
 		grow();
 		spread();
-        expire--;
 		if (expire == 0) {
 			expire = c;
 			killflag = 0;
 			// 킬초
-			killinit();
+			for (auto nxt : killarr) {
+				tree[nxt.first][nxt.second] = 0;
+			}
+			killarr.clear();
 		}
 		if (!killflag) kill();
-		
+		expire--;
 	}
 	cout << total_kill_cnt;
 	return 0;
