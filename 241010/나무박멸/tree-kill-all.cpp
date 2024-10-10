@@ -132,7 +132,12 @@ void kill() {
 			// 범위 범어가도 안되고 
 			if (nx < 0 || ny < 0 || nx >= n || ny >= n) break;
 			// 제초 or 벽 있을시 안됨 
-			if (tree[nx][ny] <= 0) break;
+			if (tree[nx][ny] < 0) break;
+            if (tree[nx][ny] == 0){
+                tree[nx][ny] = -2;
+                killarr.push_back({nx,ny});
+                break;
+            }
 			// 나무가 있다는 것 
 			tree[nx][ny] = -2; // 제초 뿌림
 			killflag = 1;
