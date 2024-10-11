@@ -16,13 +16,13 @@ struct ColorCheck {
 };
 int q, type;
 Node nodes[100006];
-vector<Node> roots;
+vector<int> roots;
 
 // 깊이체크
 bool check_depth(Node p, int depth) {
     if (p.id == 0) return true;
     if (p.max_depth <= depth) return false;
-    else (check_depth(nodes[p.p], depth + 1));
+    return check_depth(nodes[p.p], depth + 1);
 }
 // 삽입
 void insert() {
@@ -36,7 +36,7 @@ void insert() {
     nd.max_depth = d;
     // -1이면 루트노드 
     if (p == -1) {
-        roots.push_back(nd);
+        roots.push_back(m);
         nd.p = 0;
     }
     // root거나 아니거나 확인 해서 가능하면 
@@ -56,7 +56,7 @@ void change_color() {
     stack<int> s;
     s.push(m);
     while (!s.empty()) {
-        Node cur = nodes[s.top()]; s.pop();
+        Node& cur = nodes[s.top()]; s.pop();
         nodes[cur.id].color = newcolor;
         for (int nxt : cur.child) {
             s.push(nxt);
@@ -64,16 +64,16 @@ void change_color() {
     }
     
 }
-int search_color() {
+void search_color() {
     int m;
     cin >> m;
     cout << nodes[m].color << "\n";
 }
-long long value_sum() {
+void value_sum() {
     long long totalBeauty = 0;
-    for (Node& root : roots) {
+    for (int rootId : roots) {
         stack<int> s;
-        s.push(root.id);
+        s.push(rootId);
         ColorCheck colorCheck = {0, {0}};
 
         while (!s.empty()) {
