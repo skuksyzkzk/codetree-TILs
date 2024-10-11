@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <unordered_set>
 using namespace std;
 
 struct Node {
@@ -9,10 +10,6 @@ struct Node {
     int color;
     int max_depth;
     vector<int> child;
-};
-struct ColorCheck {
-    long long result;
-    int color[6];
 };
 int q, type;
 Node nodes[100006];
@@ -74,22 +71,19 @@ void value_sum() {
     for (int rootId : roots) {
         stack<int> s;
         s.push(rootId);
-        ColorCheck colorCheck = {0, {0}};
+        unordered_set<int> distinctColors;
 
         while (!s.empty()) {
             int curId = s.top(); s.pop();
             Node& cur = nodes[curId];
-            if (colorCheck.color[cur.color] == 0) {
-                colorCheck.result++;
-            }
-            colorCheck.color[cur.color]++;
+            distinctColors.insert(cur.color);
 
             for (int childId : cur.child) {
                 s.push(childId);
             }
         }
 
-        totalBeauty += colorCheck.result * colorCheck.result;
+        totalBeauty += distinctColors.size() * distinctColors.size();
     }
     cout << totalBeauty << "\n";
 }
